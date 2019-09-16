@@ -74,7 +74,7 @@ public class SamplePathPlanning extends PathPlanning {
     	
     	//********Written by Animesh**********//
         try{
-			ServerSocket ss = new ServerSocket(5008);
+			ServerSocket ss = new ServerSocket(1235);
             Socket sss = ss.accept();
 
             System.out.println("Client connected");
@@ -92,7 +92,9 @@ public class SamplePathPlanning extends PathPlanning {
     	        	targets1.add(a2);
     	            this.targets = targets1;
     	            System.out.println("These are the total targets" + this.targets);
-    	            ss.close();
+//    	            ss.close();
+//    	            bf.close();
+//    	            in.close();
     			}
     		} catch (FileNotFoundException e) {
     			// TODO Auto-generated catch block
