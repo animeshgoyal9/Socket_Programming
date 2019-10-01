@@ -16,6 +16,8 @@ import rescuecore2.worldmodel.Entity;
 import rescuecore2.worldmodel.EntityID;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.io.*;
 import java.net.*;
 
@@ -69,14 +71,22 @@ public class SamplePathPlanning extends PathPlanning {
 	        
 	        return num;
 	    }
-//	--------------------------------------------------------------------DO NOT EDIT------------------------------------------	
 	
+	public static <T, U> List<U> 
+    convertStringListToIntList(List<T> listOfString, 
+                               Function<T, U> function) 
+    { 
+        return listOfString.stream() 
+            .map(function) 
+            .collect(Collectors.toList()); 
+    } 
+//	--------------------------------------------------------------------DO NOT EDIT------------------------------------------		
 	 public PathPlanning setDestination(Collection<EntityID> targets) {
 //		 Create a new list that is sent to python
 		 ArrayList<EntityID> newList = new ArrayList<>(targets);
 		 try {
 //			 Open the socket
-			 Socket ss = new Socket("localhost", 2021);
+			 Socket ss = new Socket("localhost", 2022);
 			 PrintWriter out = new PrintWriter(ss.getOutputStream(), true);
 //			 Send information to python
 			 out.println(newList);
@@ -84,36 +94,44 @@ public class SamplePathPlanning extends PathPlanning {
 			 BufferedReader in = new BufferedReader(new InputStreamReader(ss.getInputStream()));
 //			 Create a string variable that stores the input
 			 String str;
-			 while((str = in.readLine()) != null) {
-//				 Use Parse int function to convert the string to integer
-				 System.out.println("client:" + isParseInt(str));
+			 while((str = in.readLine()) != null) 
+			 {
+				 String replace = str.replace("[","");
+				 String replace1 = replace.replace("]","");
+//				 Split the list
+				 List<String> myList = new ArrayList<String>(Arrays.asList(replace1.split(", ")));
+//				 Convert string of list to list
+				 List<Integer> listOfInteger = myList.stream().map(s -> Integer.parseInt(s)).collect(Collectors.toList());
+//				 Print and check if everything is correct
+				 System.out.println("THIS IS THE PARSE INT STRING%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% "+ listOfInteger);
+				 
 //				 Add the integers to Array - targets1
 				 ArrayList<EntityID> targets1 = new ArrayList<EntityID>();
-				 EntityID a1= new EntityID(isParseInt(str));
+				 EntityID a1= new EntityID(listOfInteger.get(0));
 				 targets1.add(a1);
 				 this.targets = targets1;	 
 //				 Flushing is important
 				 out.flush();
-			 		}
+			 }
 //			 Close the connection
 			 out.close();
 			 in.close();
 			 ss.close();
-			 	} catch (FileNotFoundException e) {
-	    			// TODO Auto-generated catch block
-	    			System.out.println(e);
-	    			e.printStackTrace();
-	    		} catch (IOException e) {
-	    			// TODO Auto-generated catch block
-	    			System.out.println(e);
-	    			e.printStackTrace();
-	    		} 
+		 	} catch (FileNotFoundException e) {
+    			// TODO Auto-generated catch block
+    			System.out.println(e);
+    			e.printStackTrace();
+    		} catch (IOException e) {
+    			// TODO Auto-generated catch block
+    			System.out.println(e);
+    			e.printStackTrace();
+    		} 
 		 		
 		 return this;
 	 }
-	 
+
 //	--------------------------------------------------------------------DO NOT EDIT------------------------------------------	
-			
+	
 //		   System.out.println("+++++++++++++++++++++++++++++++++++" + this.worldInfo.getFireBuildingIDs());
 //		   FireBrigade agent = (FireBrigade) agentInfo.me();
 //		   EntityID agentID = agentInfo.getID();
@@ -133,43 +151,6 @@ public class SamplePathPlanning extends PathPlanning {
 //		   return this;
 //			--------------------------------------------------------------------DO NOT EDIT------------------------------------------				   
 
-//    @Override
-//	    public PathPlanning setDestination(Collection<EntityID> targets) {
-//	    	ArrayList<EntityID> newList = new ArrayList<>(targets);
-//	//    	this.targets = targets;
-//	//    	ArrayList<EntityID> list=new ArrayList<EntityID>(targets);
-//	    	System.out.println("hellllooooo" + newList);
-//	//    	this.targets = targets;	
-//	    	
-//	    	try{
-//				Socket ss = new Socket("localhost", 2021);
-//				PrintWriter out = new PrintWriter(ss.getOutputStream(),true);
-//				out.println(newList);
-//				
-//				BufferedReader in = new BufferedReader(new InputStreamReader(ss.getInputStream()));
-//				String str;
-//				while ((str = in.readLine()) != null) {
-//					System.out.println("client: " + isParseInt(str));
-//					ArrayList<EntityID> targets1 = new ArrayList<EntityID>();
-//					EntityID a1 = new EntityID(isParseInt(str));
-//					targets1.add(a1);
-//					out.close();
-//		            System.out.println(targets1 + "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"); 
-//		            this.targets = targets1;	
-//		            in.close();
-//					ss.close();
-//				}
-//	    		} catch (FileNotFoundException e) {
-//	    			// TODO Auto-generated catch block
-//	    			System.out.println(e);
-//	    			e.printStackTrace();
-//	    		} catch (IOException e) {
-//	    			// TODO Auto-generated catch block
-//	    			System.out.println(e);
-//	    			e.printStackTrace();
-//	    		} 
-//			return this;
-//    	--------------------------------------------------------------------DO NOT EDIT------------------------------------------		
 ////		//********Written by Animesh**********//
 //    	ArrayList<EntityID> target_points = new ArrayList<EntityID>();
 //    	EntityID a1 = new EntityID(298);
