@@ -20,5 +20,4 @@ while True:
 	byte_str = bytes(str_list, encoding="utf-8")
 	print(byte_str)
 	c.send(byte_str)
-	break
-c.close()
+	c.close()
