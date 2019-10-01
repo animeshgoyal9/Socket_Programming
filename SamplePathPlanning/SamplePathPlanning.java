@@ -10,6 +10,8 @@ import adf.agent.precompute.PrecomputeData;
 import adf.component.module.algorithm.PathPlanning;
 import rescuecore2.misc.collections.LazyMap;
 import rescuecore2.standard.entities.Area;
+import rescuecore2.standard.entities.FireBrigade;
+import rescuecore2.standard.entities.StandardEntityURN;
 import rescuecore2.worldmodel.Entity;
 import rescuecore2.worldmodel.EntityID;
 
@@ -67,37 +69,37 @@ public class SamplePathPlanning extends PathPlanning {
 	        
 	        return num;
 	    }
-	
 //	--------------------------------------------------------------------DO NOT EDIT------------------------------------------	
-	   @Override
-	    public PathPlanning setDestination(Collection<EntityID> targets) {
-//	    	Create a new list that is to be sent to Python
-		   ArrayList<EntityID> newList = new ArrayList<>(targets);
-	    	
-	    	try{
-//	    		Open the socket
-				Socket ss = new Socket("localhost", 2021);
-				PrintWriter out = new PrintWriter(ss.getOutputStream(),true);
-//				Send information to Python
-				out.println(newList);
-//				Take the data in from socket
-				BufferedReader in = new BufferedReader(new InputStreamReader(ss.getInputStream()));
-//				Create a string variable that stores the input
-				String str;
-				while ((str = in.readLine()) != null) {
-//					Use parseInt function to convert the string to integer
-					System.out.println("client: " + isParseInt(str));
-//					Add the integers to Array - Targets1
-					ArrayList<EntityID> targets1 = new ArrayList<EntityID>();
-					EntityID a1 = new EntityID(isParseInt(str));
-					targets1.add(a1);
-					this.targets = targets1;
-//					Close the connection
-					out.close();
-		            in.close();
-					ss.close();
-				   }
-	    		} catch (FileNotFoundException e) {
+	
+	 public PathPlanning setDestination(Collection<EntityID> targets) {
+//		 Create a new list that is sent to python
+		 ArrayList<EntityID> newList = new ArrayList<>(targets);
+		 try {
+//			 Open the socket
+			 Socket ss = new Socket("localhost", 2021);
+			 PrintWriter out = new PrintWriter(ss.getOutputStream(), true);
+//			 Send information to python
+			 out.println(newList);
+//			 Take the data in from socket
+			 BufferedReader in = new BufferedReader(new InputStreamReader(ss.getInputStream()));
+//			 Create a string variable that stores the input
+			 String str;
+			 while((str = in.readLine()) != null) {
+//				 Use Parse int function to convert the string to integer
+				 System.out.println("client:" + isParseInt(str));
+//				 Add the integers to Array - targets1
+				 ArrayList<EntityID> targets1 = new ArrayList<EntityID>();
+				 EntityID a1= new EntityID(isParseInt(str));
+				 targets1.add(a1);
+				 this.targets = targets1;	 
+//				 Flushing is important
+				 out.flush();
+			 		}
+//			 Close the connection
+			 out.close();
+			 in.close();
+			 ss.close();
+			 	} catch (FileNotFoundException e) {
 	    			// TODO Auto-generated catch block
 	    			System.out.println(e);
 	    			e.printStackTrace();
@@ -106,94 +108,76 @@ public class SamplePathPlanning extends PathPlanning {
 	    			System.out.println(e);
 	    			e.printStackTrace();
 	    		} 
-			return this;
-//	--------------------------------------------------------------------DO NOT EDIT------------------------------------------
+		 		
+		 return this;
+	 }
+	 
+//	--------------------------------------------------------------------DO NOT EDIT------------------------------------------	
+			
+//		   System.out.println("+++++++++++++++++++++++++++++++++++" + this.worldInfo.getFireBuildingIDs());
+//		   FireBrigade agent = (FireBrigade) agentInfo.me();
+//		   EntityID agentID = agentInfo.getID();
+//		   System.out.println(agentID.getValue() == 1127015061);
+//		   if (agentID.getValue() == 1127015061) {
+//			   targets11 = this.worldInfo.getFireBuildingIDs(); 
+//		   } else {
+//			   targets22 = this.worldInfo.getFireBuildingIDs();
+//		   }
+////		   System.out.println("THIS IS TARGET 11--------------------------------" + targets11);
+////		   System.out.println("IS TARGET11 null or empty------------------------" + (targets11 == null || targets11.isEmpty()));
+////		   System.out.println("THIS IS TARGET 22--------------------------------" + targets22);
+////		   System.out.println("IS TARGET22 null or empty------------------------" + (targets22 == null || targets22.isEmpty()));
+//		   
+//		   this.targets = targets;
+//		   
+//		   return this;
+//			--------------------------------------------------------------------DO NOT EDIT------------------------------------------				   
+
 //    @Override
-//    public PathPlanning setDestination(Collection<EntityID> targets) {
-//    	ArrayList<EntityID> newList = new ArrayList<>(targets);
-////    	this.targets = targets;
-////    	ArrayList<EntityID> list=new ArrayList<EntityID>(targets);
-//    	System.out.println("hellllooooo" + newList);
-////    	this.targets = targets;	
-//    	
-//    	try{
-//			Socket ss = new Socket("localhost", 2021);
-//			PrintWriter out = new PrintWriter(ss.getOutputStream(),true);
-//			out.println(newList);
-//			
-//			BufferedReader in = new BufferedReader(new InputStreamReader(ss.getInputStream()));
-//			String str;
-//			while ((str = in.readLine()) != null) {
-//				System.out.println("client: " + isParseInt(str));
-//				ArrayList<EntityID> targets1 = new ArrayList<EntityID>();
-//				EntityID a1 = new EntityID(isParseInt(str));
-//				targets1.add(a1);
-//				out.close();
-//	            System.out.println(targets1 + "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"); 
-//	            this.targets = targets1;	
-//	            in.close();
-//				ss.close();
-//			}
-//    		} catch (FileNotFoundException e) {
-//    			// TODO Auto-generated catch block
-//    			System.out.println(e);
-//    			e.printStackTrace();
-//    		} catch (IOException e) {
-//    			// TODO Auto-generated catch block
-//    			System.out.println(e);
-//    			e.printStackTrace();
-//    		} 
-//		return this;
-//    	--------------------------------------------------------------------DO NOT EDIT------------------------------------------
-//    	//********Written by Animesh**********//
-//        try{
-//			ServerSocket ss = new ServerSocket(1235);
-//            Socket sss = ss.accept();
-//
-//            System.out.println("Client connected");
-//            try {
-//    			InputStreamReader in = new InputStreamReader(sss.getInputStream());
-//    			BufferedReader bf = new BufferedReader(in);
-//
-//    			String str;
-//    			while ((str = bf.readLine()) != null) {
-//    				System.out.println("client: " + isParseInt(str));
-//    				ArrayList<EntityID> targets1 = new ArrayList<EntityID>();
-//    	        	EntityID a1 = new EntityID(isParseInt(str));
-////    	        	EntityID a2 = new EntityID(936);
-//    	        	targets1.add(a1);
-////    	        	targets1.add(a2);
-//    	            this.targets = targets1;
-//    	            System.out.println("These are the total targets" + this.targets);
-////    	            ss.close();
-////    	            bf.close();
-////    	            in.close();
-//    			}
-//    		} catch (FileNotFoundException e) {
-//    			// TODO Auto-generated catch block
-//    			System.out.println(e);
-//    			e.printStackTrace();
-//    		} catch (IOException e) {
-//    			// TODO Auto-generated catch block
-//    			System.out.println(e);
-//    			e.printStackTrace();
-//    		}
-//            
-//        } catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			System.out.println(e);
-//			e.printStackTrace();
-//		}
-//		return this;
-//		
+//	    public PathPlanning setDestination(Collection<EntityID> targets) {
+//	    	ArrayList<EntityID> newList = new ArrayList<>(targets);
+//	//    	this.targets = targets;
+//	//    	ArrayList<EntityID> list=new ArrayList<EntityID>(targets);
+//	    	System.out.println("hellllooooo" + newList);
+//	//    	this.targets = targets;	
+//	    	
+//	    	try{
+//				Socket ss = new Socket("localhost", 2021);
+//				PrintWriter out = new PrintWriter(ss.getOutputStream(),true);
+//				out.println(newList);
+//				
+//				BufferedReader in = new BufferedReader(new InputStreamReader(ss.getInputStream()));
+//				String str;
+//				while ((str = in.readLine()) != null) {
+//					System.out.println("client: " + isParseInt(str));
+//					ArrayList<EntityID> targets1 = new ArrayList<EntityID>();
+//					EntityID a1 = new EntityID(isParseInt(str));
+//					targets1.add(a1);
+//					out.close();
+//		            System.out.println(targets1 + "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"); 
+//		            this.targets = targets1;	
+//		            in.close();
+//					ss.close();
+//				}
+//	    		} catch (FileNotFoundException e) {
+//	    			// TODO Auto-generated catch block
+//	    			System.out.println(e);
+//	    			e.printStackTrace();
+//	    		} catch (IOException e) {
+//	    			// TODO Auto-generated catch block
+//	    			System.out.println(e);
+//	    			e.printStackTrace();
+//	    		} 
+//			return this;
+//    	--------------------------------------------------------------------DO NOT EDIT------------------------------------------		
 ////		//********Written by Animesh**********//
-////    	ArrayList<EntityID> target_points = new ArrayList<EntityID>();
-////    	EntityID a1 = new EntityID(298);
-////    	target_points.add(a1);
-////        this.targets = target_points;
-////        return this;
+//    	ArrayList<EntityID> target_points = new ArrayList<EntityID>();
+//    	EntityID a1 = new EntityID(298);
+//    	target_points.add(a1);
+//        this.targets = target_points;
+//        return this;
 //    	--------------------------------------------------------------------DO NOT EDIT------------------------------------------
-    }
+    
 
     @Override
     public PathPlanning updateInfo(MessageManager messageManager) {
@@ -270,7 +254,7 @@ public class SamplePathPlanning extends PathPlanning {
         this.result = path;
         System.out.println("This is path planning output");
         System.out.println(this.result);
-        System.out.println("These are the buildings on fire" + this.worldInfo.getFireBuildings());
+        
         return this;
         
     }
